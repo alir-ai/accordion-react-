@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 const data = [
   {
@@ -19,10 +19,13 @@ const data = [
 ];
 
 function Accordion() {
+  const [open, setOpen] = useState(null);
   return (
     <div className="accordion">
       {data.map((item) => (
-        <AccordionItem key={item.id} item={item} />
+        <AccordionItem key={item.id} item={item} setOpen={setOpen} open={open}>
+          {item.text}
+        </AccordionItem>
       ))}
     </div>
   );
@@ -30,16 +33,15 @@ function Accordion() {
 
 export default Accordion;
 
-function AccordionItem({ item }) {
-  const [isOpen, setIsOpen] = useState(false);
+function AccordionItem({ item, setOpen, open, children }) {
+  const isOpen = item.id === open;
+  
   return (
     <div className={`accordion-item ${isOpen ? "accordion__expanded" : ""}`}>
-      <div
-        className="accordion-item__header"
-        onClick={() => setIsOpen((is) => !is)}
-      >
+      <div className="accordion-item__header" onClick={() => setOpen(item.id)}>
         <div>{item.title}</div>
-        <ChevronDownIcon className="accordion-item__chevron"
+        <ChevronDownIcon
+          className="accordion-item__chevron"
           // style={{
           //   width: "1.2rem",
           //   transition: "all 0.3s ease-out",
@@ -47,7 +49,7 @@ function AccordionItem({ item }) {
           // }}
         />
       </div>
-      <div className="accordion-item__content">{item.text} </div>
+      <div className="accordion-item__content">{children} </div>
     </div>
   );
 }
